@@ -1,0 +1,9 @@
+{
+  "name": "WiMiServer",
+  "description": "WiMiServer",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "4.x.x",
+    "mongoose": "4.x.x"
+  }
+}

@@ -1,40 +1,41 @@
 var express = require('express');
-var RPi = require('./../models/RPi');
-var place = require('./../models/place');
+var hub = require('./../models/hub');
 var router = express.Router();
 
 module.exports = function(db)
 {
   router.post('/', function(req, res){
-    var newRPi = new RPi();
-    newRPi.pId = req.body.pId
-    newRPi.Id = req.body.Id;
-    newRPi.key = req.body.key;
-    newRPi.com = req.body.com;
+    var newHub = new hub();
+    newHub.deviceId = req.body.deviceId;
+    newHub.uuid = req.body.uuid;
+    newHub.major = req.body.major;
+    newHub.minor = req.body.minor;
+    newHub.rssi = req.body.rssi;
+    newHub.cur = new Date(req.body.cur);
 
-    newRPi.save(function(err){
+    newHub.save(function(err){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('new RPi Inserted!');
+        console.log('new hub Inserted!');
         res.status(200).json({code: 200, message: "succese"});
       }
     });
   });
 
   router.delete('/', function(req, res){
-    RPi.remove({Id: req.body.Id}, function(err, output){
+    hub.remove({deviceId: req.body.deviceId}, function(err, output){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('RPi deleted!');
+        console.log('hub deleted!');
         res.status(200).json({code: 200, message: "succese"});
       }
     });
   });
-
+/*
   router.put('/', function(req, res){
     var Key = ""
     var PId = ""
@@ -56,40 +57,40 @@ module.exports = function(db)
       }
     })
   });
-
+*/
   router.get('/', function(req, res){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
     res.setHeader('Access-Control-Allow-Credentials', true);
-    RPi.find(function(err, RPis){
+    hub.find(function(err, Hubs){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
         console.log('read all RPi!');
         var result = {
-          RPIs: RPis
+          hubs: Hubs
         };
         res.status(200).json(result);
       }
     });
   });
-
-  router.get('/:Id', function(req, res){
-    RPi.findOne({Id: req.params.Id}, function(err, user){
+/*
+  router.get('/:deviceId', function(req, res){
+    hub.findOne({deviceId: req.params.deviceId}, function(err, user){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
         console.log('read RPi!');
         var result = {
-          RPI: RPi
+          hubs: hub
         };
         res.status(200).json(result);
       }
     });
   });
-
+*/
   return router;
 }

@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 
 var iBeacon = mongoose.Schema({
   id: Number,
-  uuid: Number,
-  maj: Number,
-  min: Number,
+  uuid: String,
+  maj: String,
+  min: String
 });
 
 module.exports = mongoose.model('ibeacons', iBeacon);

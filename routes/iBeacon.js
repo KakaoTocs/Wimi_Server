@@ -1,14 +1,11 @@
 var express = require('express');
-var multer = require('multer');
-var path = require('path');
-var mongoose = require('mongoose');
 var iBeacon = require('./../models/iBeacon');
-var express = require('express');
 var router = express.Router();
 
 module.exports = function(db)
 {
   router.post('/', function(req, res){
+    console.log(req.body)
     var newiBeacon = new iBeacon();
     newiBeacon.id = req.body.id;
     newiBeacon.uuid = req.body.uuid;
@@ -20,7 +17,7 @@ module.exports = function(db)
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('newiBeacon Inserted!');
+        console.log('new iBeacon Inserted!');
         res.status(200).json({code: 200, message: "succese"});
       }
     });
@@ -55,13 +52,20 @@ module.exports = function(db)
   });
 
   router.get('/', function(req, res){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
+    res.setHeader('Access-Control-Allow-Credentials', true);
     iBeacon.find(function(err, iBeacons){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
         console.log('read all iBeacons!');
-        res.status(200).json(iBeacons);
+        var result = {
+          iBeacons: iBeacons
+        };
+        res.status(200).json(result);
       }
     });
   });
@@ -73,6 +77,9 @@ module.exports = function(db)
         res.status(400).json({code: 400, message: "fail"});
       }else{
         console.log('read iBeacon!');
+        var result = {
+          iBeacon: iBeacon
+        };
         res.status(200).json(iBeacon);
       }
     });

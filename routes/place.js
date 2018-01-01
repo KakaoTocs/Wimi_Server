@@ -1,54 +1,51 @@
 var express = require('express');
-var user = require('./../models/user');
+var place = require('./../models/place');
+var building = require('./../models/building');
 var router = express.Router();
 
 module.exports = function(db)
 {
   router.post('/', function(req, res){
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    var newUser = new user();
-    newUser.bId = req.body.bId;
-    newUser.classNum = req.body.classNum;
-    newUser.name = req.body.name;
-    newUser.proFilePic = req.body.proFilePic;
+    var newPlace = new place();
+    newPlace.bId = req.body.bId;
+    newPlace.pId = req.body.pId;
+    newPlace.floor = req.body.floor;
+    newPlace.pname = req.body.pname;
 
-    newUser.save(function(err){
+    newPlace.save(function(err){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('new User Inserted!');
+        console.log('new place Inserted!');
         res.status(200).json({code: 200, message: "succese"});
       }
     });
   });
 
   router.delete('/', function(req, res){
-    user.remove({classNum: req.body.classNum}, function(err, output){
+    place.remove({pId: req.body.pId}, function(err, output){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('user deleted!');
+        console.log('place deleted!');
         res.status(200).json({code: 200, message: "succese"});
       }
-    })
+    });
   });
 
   router.put('/', function(req, res){
-    var query = {classNum: req.body.classNum};
-    var operator = {bId: req.body.bId, classNum: req.body.classNum, name: req.body.name, proFilePic: req.body.proFilePic};
+    var query = {pId: req.body.pId};
+    var operator = {pId: req.body.pId, bId: req.body.bId, floor: req.body.floor, pname: req.body.pname};
     var option = {upsert: true};
 
-    db.collection('users').update(query, operator, option, function(err, upserted){
+    db.collection('places').update(query, operator, option, function(err, upserted){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('user fixed!');
+        console.log('place fixed!');
         res.status(200).json({code: 200, message: "succese"});
       }
     });
@@ -59,29 +56,29 @@ module.exports = function(db)
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
     res.setHeader('Access-Control-Allow-Credentials', true);
-    user.find(function(err, users){
+    place.find(function(err, places){
       if(err){
         console.log(err);
-        res.status(400).json({code: 400, message: "fail", err: err.message});
+        res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('read all user!');
+        console.log('read all places!');
         var result = {
-          Users: users
+          Places: places
         };
         res.status(200).json(result);
       }
     });
   });
 
-  router.get('/:classNum', function(req, res){
-    user.findOne({classNum: req.params.classNum}, function(err, user){
+  router.get('/:pId', function(req, res){
+    place.findOne({pId: req.params.pId}, function(err, place){
       if(err){
         console.log(err);
         res.status(400).json({code: 400, message: "fail"});
       }else{
-        console.log('read user!');
+        console.log('read place!');
         var result = {
-          User: user
+          Place: place
         };
         res.status(200).json(result);
       }
